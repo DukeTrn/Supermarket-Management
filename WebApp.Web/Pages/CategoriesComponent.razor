@@ -8,7 +8,7 @@
 <h3>Quản lý danh mục sản phẩm</h3>
 <br />
 <div class="row">
-    <div class="col-4">
+    <div class="col-3">
         <label for="cashier">Tên danh mục</label>
         <input type="text" id="category" class="form-control" @bind-value="name" />
     </div>
@@ -17,6 +17,8 @@
         <button type="button" class="btn btn-primary form-control" @onclick="LoadTransactions">Tìm kiếm</button>
     </div>
 </div>
+<br />
+<button type="button" @onclick="OnClickAddCategory" class="btn btn-primary">Thêm danh mục</button>
 <br />
 @if (categories != null)
 {
@@ -43,8 +45,8 @@
         </tbody>
     </table>
 }
-<br />
-<button type="button" @onclick="OnClickAddCategory" class="btn btn-primary">Thêm danh mục</button>
+
+
 
 
 
