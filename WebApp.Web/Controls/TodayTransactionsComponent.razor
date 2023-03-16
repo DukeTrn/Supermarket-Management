@@ -1,0 +1,55 @@
+﻿@inject WebApp.UseCases.UseCaseInterfaces.IGetTodayTransactionsUseCase GetTodayTransactionsUseCase
+
+@if (transactions != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Tên nhân viên</th>
+                <th>Tên sản phẩm</th>
+                <th>Thời gian</th>
+                <th>Số lượng hiện có</th>
+                <th>Số lượng bán</th>
+                <th>Số lượng còn lại</th>
+                <th>Tổng giá</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tran in transactions)
+            {
+                <tr>
+                    <td>@tran.CashierName</td>
+                    <td>@tran.ProductName</td>
+                    <td>@tran.TimeStamp.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@tran.BeforeQty</td>
+                    <td>@tran.SoldQty</td>
+                    <td>@(tran.BeforeQty - tran.SoldQty)</td>
+                    <td>@(string.Format($"{tran.SoldQty * tran.Price} đ"))</td>
+                </tr>
+            }
+        </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="5">&nbsp;</td>
+                    <td style="text-align:right">
+                         <b>Tổng:</b>
+                    </td>
+                    <td style="text-align:right">
+                         <b>
+                             @(string.Format($"{transactions.Sum(x => x.Price * x.SoldQty)} đ"))
+                         </b>
+                    </td>
+                </tr>
+            </tfoot>
+    </table>
+}
+
+@code {
+    private IEnumerable<Transaction> transactions;
+
+    public void LoadTransactions(string cashierName)
+    {
+        transactions = GetTodayTransactionsUseCase.Execute(cashierName);
+        StateHasChanged();
+    }
+}

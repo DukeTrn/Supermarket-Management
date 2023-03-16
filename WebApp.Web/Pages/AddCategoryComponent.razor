@@ -1,5 +1,50 @@
-﻿<h3>Add Category</h3>
+﻿@page "/addcategory"
+@attribute [Authorize(Policy = "AdminOnly")]
+
+@inject NavigationManager NavigationManager
+@inject WebApp.UseCases.UseCaseInterfaces.IAddCategoryUseCase AddCategoryUseCase
+
+<h3>Thêm danh mục sản phẩm</h3>
+<br />
+@if (category != null)
+{
+    <EditForm Model="category" OnValidSubmit="OnValidSubmit">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
+
+        <div class="form-group">
+            <label for="name">Tên</label>
+            <InputText id="name" @bind-Value="category.Name" class="form-control"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Mô tả</label>
+            <InputText id="description" @bind-Value="category.Description" class="form-control"></InputText>
+        </div>
+        <br />
+        <button type="submit" class="btn btn-primary">Lưu</button>
+        <button type="button" class="btn btn-primary" @onclick="OnCancle">Hủy</button>
+    </EditForm>
+}
 
 @code {
+    private Category category;
 
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        category = new Category();
+    }
+
+    private void OnValidSubmit()
+    {
+        AddCategoryUseCase.Execute(category);
+        NavigationManager.NavigateTo("/categories");
+    }
+
+    private void OnCancle()
+    {
+        NavigationManager.NavigateTo("/categories");
+    }
 }

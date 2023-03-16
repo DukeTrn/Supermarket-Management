@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33103.184
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp.Web", "WebApp.Web\WebApp.Web.csproj", "{B57366E2-C550-41A9-8797-7BAF6496B565}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApp.Web", "WebApp.Web\WebApp.Web.csproj", "{B57366E2-C550-41A9-8797-7BAF6496B565}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp.UseCases", "WebApp.UseCases\WebApp.UseCases.csproj", "{24FCF9DF-D3D1-4328-B2CA-311948EF5ED2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApp.UseCases", "WebApp.UseCases\WebApp.UseCases.csproj", "{24FCF9DF-D3D1-4328-B2CA-311948EF5ED2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp.Model", "WebApp.Model\WebApp.Model.csproj", "{540508FA-5112-4304-81E6-8117F0B47665}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApp.Model", "WebApp.Model\WebApp.Model.csproj", "{540508FA-5112-4304-81E6-8117F0B47665}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugins.DataStore.InMemory", "Plugins.DataStore.InMemory\Plugins.DataStore.InMemory.csproj", "{50788BB1-1C5D-45B2-8145-ED954B905827}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plugins.DataStore.InMemory", "Plugins.DataStore.InMemory\Plugins.DataStore.InMemory.csproj", "{50788BB1-1C5D-45B2-8145-ED954B905827}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugins.DataStore.Sql", "Plugins.DataStore.Sql\Plugins.DataStore.Sql.csproj", "{97C10E3F-D8B5-4012-A25D-698ABCD88052}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{50788BB1-1C5D-45B2-8145-ED954B905827}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50788BB1-1C5D-45B2-8145-ED954B905827}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{50788BB1-1C5D-45B2-8145-ED954B905827}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97C10E3F-D8B5-4012-A25D-698ABCD88052}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97C10E3F-D8B5-4012-A25D-698ABCD88052}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97C10E3F-D8B5-4012-A25D-698ABCD88052}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97C10E3F-D8B5-4012-A25D-698ABCD88052}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

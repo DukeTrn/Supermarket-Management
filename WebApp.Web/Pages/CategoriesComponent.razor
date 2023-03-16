@@ -1,45 +1,86 @@
 ﻿@page "/categories"
+@attribute [Authorize(Policy = "AdminOnly")]
+
 @inject NavigationManager NavigationManager
-@inject WebApp.UseCases.UseCaseInterfaces.IViewCategoriesUseCase ViewCategoriesUseCase
+@inject WebApp.UseCases.UseCaseInterfaces.IViewCategoriesUseCase ViewCategoryUseCase
+@inject WebApp.UseCases.UseCaseInterfaces.IDeleteCategoryUseCase DeleteCategoryUseCase
 
-<h3>Category Management</h3>
-
+<h3>Quản lý danh mục sản phẩm</h3>
+<br />
+<div class="row">
+    <div class="col-4">
+        <label for="cashier">Tên danh mục</label>
+        <input type="text" id="category" class="form-control" @bind-value="name" />
+    </div>
+    <div class="col-2">
+        <label>&nbsp;</label>
+        <button type="button" class="btn btn-primary form-control" @onclick="LoadTransactions">Tìm kiếm</button>
+    </div>
+</div>
+<br />
 @if (categories != null)
 {
-    <table class= "table">
+    <table class="table">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Description</th>
+                <th>Tên</th>
+                <th>Mô tả</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in categories)
+            @foreach (var category in categories)
             {
                 <tr>
-                    <td>@item.Name</td>
-                    <td>@item.Description</td>
+                    <td>@category.Name</td>
+                    <td>@category.Description</td>
+                    <td>
+                        <button type="button" @onclick="@(() => EditCategory(category))" class="btn btn-link">Sửa</button>
+                        <button type="button" @onclick="@(() => DeleteCategory(category.Id))" class="btn btn-link">Xóa</button>
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
 }
-<br/>
-<button type = "button" @onclick = "OnClickAddCategory">Add Category</button>
+<br />
+<button type="button" @onclick="OnClickAddCategory" class="btn btn-primary">Thêm danh mục</button>
+
 
 
 @code {
-    private List<Category> categories;
 
+    private IEnumerable<Category> categories;
+    private string name;
     protected override void OnInitialized()
     {
         base.OnInitialized();
-
-        categories = ViewCategoriesUseCase.Execute()?.ToList();
-
+        LoadCategories();
     }
+
     private void OnClickAddCategory()
     {
         NavigationManager.NavigateTo("/addcategory");
+    }
+
+    private void EditCategory(Category category)
+    {
+        NavigationManager.NavigateTo($"/editcategory/{category.Id}");
+    }
+
+    private void DeleteCategory(int categoryId)
+    {
+        DeleteCategoryUseCase.Delete(categoryId);
+        LoadCategories();
+    }
+
+    private void LoadTransactions()
+    {
+        categories = ViewCategoryUseCase.Search(name);
+    }
+
+    private void LoadCategories()
+    {
+        categories = ViewCategoryUseCase.Execute()?.ToList();
     }
 }

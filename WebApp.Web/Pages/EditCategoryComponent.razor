@@ -1,0 +1,70 @@
+﻿@page "/editcategory/{categoryId}"
+@attribute [Authorize(Policy = "AdminOnly")]
+
+@inject NavigationManager NavigationManager
+@inject WebApp.UseCases.UseCaseInterfaces.IAddCategoryUseCase AddCategoryUseCase
+@inject WebApp.UseCases.UseCaseInterfaces.IGetCategoryByIdUseCase GetCategoryByIdUseCase
+@inject WebApp.UseCases.UseCaseInterfaces.IEditCategoryUseCase EditCategoryUseCase
+
+<h3>Cập nhật danh mục</h3>
+
+@if (category != null)
+{
+    <EditForm Model="category" OnValidSubmit="OnValidSubmit">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
+
+        <div class="form-group">
+            <label for="name">Tên</label>
+            <InputText id="name" @bind-Value="category.Name" class="form-control"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Mô tả</label>
+            <InputText id="description" @bind-Value="category.Description" class="form-control"></InputText>
+        </div>
+        <br/>
+        <button type="submit" class="btn btn-primary">Lưu</button>
+        <button type="button" class="btn btn-primary" @onclick="OnCancle">Hủy</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public string CategoryId { get; set; }
+
+    private Category category;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        if (int.TryParse(this.CategoryId, out int iId))
+        {
+            //this.category = GetCategoryByIdUseCase.Execute(iId);
+            var cat = GetCategoryByIdUseCase.Execute(iId);
+            this.category = new Category 
+            { 
+                Id = cat.Id, 
+                Name = cat.Name, 
+                Description = cat.Description 
+            };
+        }
+    }
+
+    private void OnValidSubmit()
+    {
+        EditCategoryUseCase.Execute(this.category);
+        NavigationManager.NavigateTo("/categories");
+    }
+
+    private void OnCancle()
+    {
+        NavigationManager.NavigateTo("/categories");
+    }
+}

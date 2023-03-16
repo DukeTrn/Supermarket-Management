@@ -1,0 +1,89 @@
+﻿@page "/products"
+@attribute [Authorize(Policy = "AdminOnly")]
+
+@inject NavigationManager NavigationManager
+@inject WebApp.UseCases.UseCaseInterfaces.IViewProductsUseCase ViewProductsUseCase
+@inject WebApp.UseCases.UseCaseInterfaces.IGetCategoryByIdUseCase GetCategoryByIdUseCase
+@inject WebApp.UseCases.UseCaseInterfaces.IDeleteProductUseCase DeleteProductUseCase
+
+<h3>Quản lý Sản phẩm</h3>
+<br />
+<div class="row">
+    <div class="col-2">
+        <label for="cashier">Tên sản phẩm</label>
+        <input type="text" id="category" class="form-control" @bind-value="name" />
+    </div>
+    <div class="col-2">
+        <label>&nbsp;</label>
+        <button type="button" class="btn btn-primary form-control" @onclick="LoadTransactions">Tìm kiếm</button>
+    </div>
+</div>
+<br/>
+@if (products != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Danh mục</th>
+                <th>Tên sản phẩm</th>
+                <th>Giá</th>
+                <th>Số lượng</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in products)
+            {
+                <tr>
+                    <td>@GetCategoryByIdUseCase.Execute(product.CategoryId.Value)?.Name</td>
+                    <td>@product.Name</td>
+                    <td>@(Math.Round(product.Price.Value, 2))</td>
+                    <td>@product.Quantity</td>
+                    <td>
+                        <button type="button" class="btn btn-link" @onclick="@(()=>OnEditProduct(product))">Sửa</button>
+                        &nbsp;
+                        <button type="button" class="btn btn-link" @onclick="@(()=>OnDeleteProduct(product.ProductId))">Xóa</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<br />
+<button type="button" @onclick="OnClickAddProduct" class="btn btn-primary">Thêm sản phẩm</button>
+
+@code {
+
+    private IEnumerable<Product> products;
+    private string name;
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        LoadProducts();
+    }
+
+    private void OnClickAddProduct()
+    {
+        NavigationManager.NavigateTo("/addproduct");
+    }
+
+    private void OnEditProduct(Product product)
+    {
+        NavigationManager.NavigateTo($"/editproduct/{product.ProductId}");
+    }
+
+    private void OnDeleteProduct(int productId)
+    {
+        DeleteProductUseCase.Delete(productId);
+    }
+
+    private void LoadTransactions()
+    {
+        products = ViewProductsUseCase.Search(name);
+    }
+
+    private void LoadProducts()
+    {
+        products = ViewProductsUseCase.Execute();
+    }
+}

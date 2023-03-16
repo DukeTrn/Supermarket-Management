@@ -1,0 +1,104 @@
+﻿@page "/transactions"
+@attribute [Authorize(Policy = "AdminOnly")]
+
+@inject IJSRuntime JSRuntime
+@inject WebApp.UseCases.UseCaseInterfaces.IGetTransactionsUseCase GetTransactionsUseCase
+
+<div id="printarea">
+    <div class="row">
+        <div class="col-2">
+            <label for="cashier">Tên nhân viên</label>
+            <input type="text" id="cashier" class="form-control" @bind-value="cashierName" />
+        </div>
+        <div class="col-3">
+            <label for="startdate">Từ ngày</label>
+            <input type="date" id="startdate" class="form-control" @bind-value="startDate" />
+        </div>
+        <div class="col-3">
+            <label for="enddate">Đến</label>
+            <input type="date" id="enddate" class="form-control" @bind-value="endDate" />
+        </div>
+        <div class="col-2">
+            <label>&nbsp;</label>
+            <button type="button" class="btn btn-primary form-control" @onclick="LoadTransactions">Tìm kiếm</button>
+        </div>
+        <div class="col-2">
+            <label>&nbsp;</label>
+            <button type="button" class="btn btn-primary form-control" @onclick="PrintReport">In</button>
+        </div>
+    </div>
+    <br />
+    @if (transactions != null)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Thời gian</th>
+                    <th>Tên nhân viên</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Số lượng tồn kho</th>
+                    <th>Số lượng đã bán</th>
+                    <th>Số lượng còn lại</th>
+                    <th>Đơn giá</th>
+                    <th>Tổng giá</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var tran in transactions)
+                {
+                    <tr>
+                        <td>@tran.TimeStamp.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@tran.CashierName</td>
+                        <td>@tran.ProductName</td>
+                        <td>@tran.BeforeQty</td>
+                        <td>@tran.SoldQty</td>
+                        <td>@(tran.BeforeQty - tran.SoldQty)</td>
+                        <td style="text-align:right">@(string.Format($"{tran.Price} đ"))</td>
+                        <td style="text-align:right">@(string.Format($"{(tran.SoldQty * tran.Price)} đ", tran.SoldQty * tran.Price))</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="6">&nbsp;</td>
+                    <td style="text-align:right">
+                        <b>Tổng:</b>
+                    </td>
+                    <td style="text-align:right">
+                        <b>
+                            @(string.Format($"{transactions.Sum(x => x.Price * x.SoldQty)} đ"))
+                        </b>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    }
+
+</div>
+
+@code {
+    private string cashierName;
+    private DateTime startDate;
+    private DateTime endDate;
+    private IEnumerable<Transaction> transactions;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        startDate = DateTime.Today;
+        endDate = DateTime.Today;
+    }
+    private void LoadTransactions()
+    {
+        transactions = GetTransactionsUseCase.Execute(cashierName, startDate, endDate);
+    }
+
+    private void PrintReport()
+    {
+        JSRuntime.InvokeVoidAsync("print");
+    }
+    // Done
+}
+
+
